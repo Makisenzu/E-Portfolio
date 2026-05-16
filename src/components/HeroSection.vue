@@ -84,6 +84,61 @@ const handleDeviceOrientation = (e: DeviceOrientationEvent) => {
   mouseY.value = (betaRelative / 45) * 15
 }
 
+const blobPosition = ref<'top' | 'bottom' | 'left' | 'right'>('bottom')
+const blobOffset = ref(50)
+const isBlobHiding = ref(false)
+const edges = ['top', 'bottom', 'left', 'right'] as const
+
+const handleBlobClick = () => {
+  if (isBlobHiding.value) return
+  isBlobHiding.value = true
+  
+  setTimeout(() => {
+    let newEdge
+    do {
+      newEdge = edges[Math.floor(Math.random() * edges.length)]
+    } while (newEdge === blobPosition.value)
+    
+    blobPosition.value = newEdge
+    blobOffset.value = 20 + Math.random() * 60
+    isBlobHiding.value = false
+  }, 400)
+}
+
+const getBlobStyle = () => {
+  const style: Record<string, string> = {
+    transition: 'transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+  }
+  
+  let hideTranslate = ''
+  let rotation = ''
+  
+  if (blobPosition.value === 'bottom') {
+    style.bottom = '0'
+    style.left = `${blobOffset.value}%`
+    hideTranslate = isBlobHiding.value ? 'translate(-50%, 100%)' : 'translate(-50%, 30%)'
+    rotation = 'rotate(0deg)'
+  } else if (blobPosition.value === 'top') {
+    style.top = '0'
+    style.left = `${blobOffset.value}%`
+    hideTranslate = isBlobHiding.value ? 'translate(-50%, -100%)' : 'translate(-50%, -30%)'
+    rotation = 'rotate(180deg)'
+  } else if (blobPosition.value === 'left') {
+    style.left = '0'
+    style.top = `${blobOffset.value}%`
+    hideTranslate = isBlobHiding.value ? 'translate(-100%, -50%)' : 'translate(-30%, -50%)'
+    rotation = 'rotate(90deg)'
+  } else if (blobPosition.value === 'right') {
+    style.right = '0'
+    style.top = `${blobOffset.value}%`
+    hideTranslate = isBlobHiding.value ? 'translate(100%, -50%)' : 'translate(30%, -50%)'
+    rotation = 'rotate(-90deg)'
+  }
+  
+  style.transform = `${hideTranslate} ${rotation}`
+  return style
+}
+
 onMounted(() => {
   window.addEventListener('mousemove', handleMouseMove)
   window.addEventListener('touchmove', handleTouchMove, { passive: true })
@@ -203,9 +258,10 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <!-- Right Content: Interactive 3D Parallax Graphic -->
+
+      <!-- Right Content: Interactive 3D Parallax Graphic (Desktop Only) -->
       <div
-        class="flex justify-center items-center relative perspective-1000 w-full aspect-square max-w-[320px] sm:max-w-[400px] lg:max-w-[500px] mx-auto lg:ml-auto mt-16 lg:mt-0"
+        class="hidden lg:flex justify-center items-center relative perspective-1000 w-full aspect-square max-w-[500px] ml-auto"
       >
         <div
           class="relative w-full h-full transition-transform duration-300 ease-out preserve-3d"
@@ -277,6 +333,44 @@ onUnmounted(() => {
           >
             <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
             <span class="font-mono text-xs font-bold text-foreground">React</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Content: Peeping Blob -->
+    <div 
+      class="fixed lg:hidden z-50 cursor-pointer"
+      :style="getBlobStyle()"
+      @click="handleBlobClick"
+    >
+      <div class="animate-[bounce_3s_infinite]">
+        <div 
+          class="relative w-28 h-28 sm:w-32 sm:h-32 bg-gradient-to-br from-primary/30 to-emerald-500/30 shadow-lg backdrop-blur-md flex justify-center items-center transition-all duration-200"
+          :style="{ 
+            borderRadius: `${50 + mouseX}% ${50 - mouseX}% ${50 + Math.abs(mouseY)}% ${50 - Math.abs(mouseY)}%`
+          }"
+        >
+          <!-- Eyes Container (shifts with tilt) -->
+          <div class="relative flex gap-5 mb-2 transition-transform duration-200"
+               :style="{ transform: `translate(${mouseX}px, ${mouseY}px)` }">
+               
+            <!-- Left Eye -->
+            <div class="w-3.5 h-5 bg-foreground rounded-full flex justify-center items-center overflow-hidden">
+              <div class="w-1.5 h-1.5 bg-background rounded-full mt-1"></div>
+            </div>
+            
+            <!-- Right Eye -->
+            <div class="w-3.5 h-5 bg-foreground rounded-full flex justify-center items-center overflow-hidden">
+              <div class="w-1.5 h-1.5 bg-background rounded-full mt-1"></div>
+            </div>
+
+            <!-- Blush -->
+            <div class="absolute top-5 -left-3 w-3 h-1.5 bg-rose-400/60 rounded-full blur-[2px]"></div>
+            <div class="absolute top-5 -right-3 w-3 h-1.5 bg-rose-400/60 rounded-full blur-[2px]"></div>
+
+            <!-- Smile -->
+            <div class="absolute top-4 left-1/2 -translate-x-1/2 w-3 h-3 border-b-2 border-foreground rounded-full"></div>
           </div>
         </div>
       </div>
