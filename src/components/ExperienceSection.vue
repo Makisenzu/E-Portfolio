@@ -20,38 +20,91 @@ import dashboardImg from '@/assets/images/dashboard.png'
 import ecommerceImg from '@/assets/images/ecommerce.png'
 import kanbanImg from '@/assets/images/kanban.png'
 
+import hack4gov4Img1 from '@/assets/images/hack4gov4_1.png'
+import hack4gov4Img2 from '@/assets/images/hack4gov4_2.jpg'
+import hack4gov4Img3 from '@/assets/images/hack4gov4_3.jpg'
+import hack4gov4Img4 from '@/assets/images/hack4gov4_4.jpg'
+
+import flutterImg1 from '@/assets/images/flutter_1.png'
+import flutterImg2 from '@/assets/images/flutter_2.jpg'
+import flutterImg3 from '@/assets/images/flutter_3.jpg'
+
+import hack4gov3Img1 from '@/assets/images/hack4gov3_1.png'
+import hack4gov3Img8 from '@/assets/images/hack4gov3_2.jpg'
+import hack4gov3Img3 from '@/assets/images/hack4gov3_3.jpg'
+import hack4gov3Img4 from '@/assets/images/hack4gov3_4.jpg'
+import hack4gov3Img5 from '@/assets/images/hack4gov3_5.jpg'
+import hack4gov3Img6 from '@/assets/images/hack4gov3_6.jpg'
+import hack4gov3Img7 from '@/assets/images/hack4gov3_7.jpg'
+import hack4gov3Img2 from '@/assets/images/hack4gov3_8.png'
+
+import psiteImg1 from '@/assets/images/psite_1.jpg'
+import psiteImg2 from '@/assets/images/psite_2.jpg'
+import psiteImg3 from '@/assets/images/psite_3.jpg'
+
+import ojtImg1 from '@/assets/images/intern_1.jpg'
+import ojtImg2 from '@/assets/images/intern_2.jpg'
+
 const experiences = [
   {
-    role: 'Senior Full-Stack Developer',
-    company: 'Tech Innovators Inc.',
-    period: '2022 - Present',
-    description:
-      'Leading the development for an enterprise SaaS platform. Architected the transition to modern frameworks, improving application performance by 40% and significantly reducing bug rates.',
-    skills: ['Vue.js', 'TypeScript', 'Tailwind CSS', 'Node.js'],
-    images: [dashboardImg, kanbanImg],
-  },
-  {
-    role: 'Software Engineer',
-    company: 'Digital Solutions LLC',
-    period: '2019 - 2022',
-    description:
-      'Developed and maintained various client web applications. Implemented robust RESTful APIs and seamlessly integrated third-party payment gateways for e-commerce clients.',
-    skills: ['React', 'Node.js', 'Express', 'PostgreSQL'],
-    images: [ecommerceImg, dashboardImg],
-  },
-  {
     role: 'Web Developer Intern',
-    company: 'Creative Agency',
-    period: '2018 - 2019',
+    company: 'St. Francis Xavier College',
+    period: '2026 - Present',
     description:
-      'Assisted in building responsive marketing websites. Learned industry best practices for web accessibility, semantic HTML, and performance optimization.',
-    skills: ['HTML/CSS', 'JavaScript', 'PHP', 'WordPress'],
-    images: [kanbanImg, ecommerceImg],
+      'Contributed to the development of the school official website (sfxc.edu.ph), focusing on improving front-end design and user experience. ',
+    skills: ['Vue.js', 'Laravel', 'MySQL'],
+    images: [ojtImg1, ojtImg2],
+  },
+  {
+    role: 'Hack4Gov4 Capture the Flag Competition',
+    company: 'Department of Information and Communications Technology',
+    period: '2025',
+    description:
+      'Competed in the Hack4Gov4 CTF Competition, securing 5th place in a regional cybersecurity competition hosted by the Department of Information and Communications Technology. Focused on Web Exploitation, Digital Forensics, Cryptography, and General Skills—a challenging discipline that tests participants’ ability to identify, analyze, and exploit vulnerabilities in-order to capture the flag.',
+    skills: ['Linux', 'Web Exploitation', 'Digital Forensics', 'Cryptography', 'General Skills'],
+    images: [hack4gov4Img1, hack4gov4Img2, hack4gov4Img3, hack4gov4Img4],
+  },
+  {
+    role: 'Mobile App Development Using Flutter Framework Training',
+    company: 'Department of Information and Communications Technology',
+    period: '2025',
+    description:
+      'Learned the basics of mobile app development using the Flutter framework. Gained knowledge in building responsive and user-friendly mobile applications with clean architecture and intuitive user interfaces.',
+    skills: ['Flutter', 'Firebase'],
+    images: [flutterImg1, flutterImg2, flutterImg3],
+  },
+  {
+    role: 'Hack4Gov3 Capture the Flag Competition',
+    company: 'Department of Information and Communications Technology',
+    period: '2024',
+    description:
+      'Competed in the Hack4Gov3 CTF Competition, securing 4th place in a regional cybersecurity competition hosted by the Department of Information and Communications Technology. Focused on Web Exploitation, Digital Forensics, Cryptography, and General Skills—a challenging discipline that tests participants’ ability to identify, analyze, and exploit vulnerabilities in-order to capture the flag.',
+    skills: ['Linux', 'Web Exploitation', 'Digital Forensics', 'Cryptography', 'General Skills'],
+    images: [
+      hack4gov3Img1,
+      hack4gov3Img2,
+      hack4gov3Img3,
+      hack4gov3Img4,
+      hack4gov3Img5,
+      hack4gov3Img6,
+      hack4gov3Img7,
+      hack4gov3Img8,
+    ],
+  },
+  {
+    role: 'PSITE Programming Competition',
+    company: 'Philippine Society of Information Technology Students',
+    period: '2024',
+    description:
+      'Competed in the PSITE Programming Competition, securing 7th place in the regional level. Focused on programming challenges that tested participants’ ability to identify, analyze, and solve problems.',
+    skills: ['Python'],
+    images: [psiteImg1, psiteImg2, psiteImg3],
   },
 ]
 
 const selectedItem = ref<(typeof experiences)[0] | null>(null)
 const isGalleryOpen = ref(false)
+const fullScreenImage = ref<string | null>(null)
 
 function openGallery(item: (typeof experiences)[0]) {
   selectedItem.value = item
@@ -144,9 +197,11 @@ function openGallery(item: (typeof experiences)[0]) {
 
     <!-- Gallery Dialog -->
     <Dialog v-model:open="isGalleryOpen">
-      <DialogContent class="sm:max-w-[800px] bg-background/95 backdrop-blur-xl border-border">
+      <DialogContent
+        class="w-[95vw] sm:max-w-[800px] max-h-[90vh] overflow-y-auto bg-background/95 backdrop-blur-xl border-border"
+      >
         <DialogHeader>
-          <DialogTitle class="text-xl font-semibold"
+          <DialogTitle class="text-xl font-semibold pr-6"
             >{{ selectedItem?.role }} @ {{ selectedItem?.company }}</DialogTitle
           >
           <DialogDescription class="text-muted-foreground">{{
@@ -154,30 +209,89 @@ function openGallery(item: (typeof experiences)[0]) {
           }}</DialogDescription>
         </DialogHeader>
 
-        <div class="mt-6 relative px-8 pb-4">
+        <div class="mt-6 relative px-4 sm:px-8 pb-4">
           <Carousel class="w-full">
             <CarouselContent>
               <CarouselItem v-for="(img, idx) in selectedItem?.images" :key="idx">
                 <div class="p-1">
                   <div
-                    class="overflow-hidden rounded-lg border border-border/50 bg-muted/50 flex items-center justify-center aspect-video relative group"
+                    class="overflow-hidden rounded-lg border border-border/50 bg-muted/50 flex items-center justify-center aspect-video relative group cursor-zoom-in"
+                    @click="fullScreenImage = img"
                   >
                     <img
                       :src="img"
                       alt="Gallery image"
                       class="object-cover w-full h-full transition-transform duration-700 group-hover:scale-[1.02]"
                     />
+                    <div
+                      class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="white"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="drop-shadow-lg"
+                      >
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                        <path d="M8 11h6" />
+                        <path d="M11 8v6" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
               </CarouselItem>
             </CarouselContent>
             <CarouselPrevious
-              class="absolute -left-4 bg-background hover:bg-accent border-border"
+              class="absolute left-0 sm:-left-4 bg-background/80 hover:bg-accent border-border"
             />
-            <CarouselNext class="absolute -right-4 bg-background hover:bg-accent border-border" />
+            <CarouselNext
+              class="absolute right-0 sm:-right-4 bg-background/80 hover:bg-accent border-border"
+            />
           </Carousel>
         </div>
       </DialogContent>
     </Dialog>
+
+    <!-- Full Screen Image Viewer -->
+    <div
+      v-if="fullScreenImage"
+      class="fixed inset-0 z-[100] flex items-center justify-center bg-background/95 backdrop-blur-xl p-2 sm:p-6 cursor-zoom-out"
+      @click="fullScreenImage = null"
+    >
+      <img
+        :src="fullScreenImage"
+        alt="Full screen view"
+        class="max-w-full max-h-full object-contain rounded-md shadow-2xl"
+      />
+      <!-- Close button -->
+      <Button
+        variant="ghost"
+        size="icon"
+        class="absolute top-4 right-4 sm:top-6 sm:right-6 bg-background/50 hover:bg-background"
+        @click.stop="fullScreenImage = null"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M18 6 6 18" />
+          <path d="m6 6 12 12" />
+        </svg>
+      </Button>
+    </div>
   </section>
 </template>
