@@ -55,8 +55,39 @@ const handleMouseMove = (e: MouseEvent) => {
   mouseY.value = y * 15
 }
 
+const handleTouchMove = (e: TouchEvent) => {
+  if (e.touches.length > 0) {
+    const touch = e.touches[0]
+    const x = (touch.clientX / window.innerWidth) * 2 - 1
+    const y = (touch.clientY / window.innerHeight) * 2 - 1
+    
+    mouseX.value = x * 15
+    mouseY.value = y * 15
+  }
+}
+
+const handleDeviceOrientation = (e: DeviceOrientationEvent) => {
+  let gamma = e.gamma || 0
+  let beta = e.beta || 0
+
+  // Constrain gamma (-45 to 45)
+  if (gamma > 45) gamma = 45
+  if (gamma < -45) gamma = -45
+  
+  // Center beta around 45 degrees (typical viewing angle) and constrain
+  let betaRelative = beta - 45
+  if (betaRelative > 45) betaRelative = 45
+  if (betaRelative < -45) betaRelative = -45
+
+  // Map the angles to our parallax translation (-15 to 15)
+  mouseX.value = (gamma / 45) * 15
+  mouseY.value = (betaRelative / 45) * 15
+}
+
 onMounted(() => {
   window.addEventListener('mousemove', handleMouseMove)
+  window.addEventListener('touchmove', handleTouchMove, { passive: true })
+  window.addEventListener('deviceorientation', handleDeviceOrientation)
   setTimeout(() => {
     isVisible.value = true
   }, 100)
@@ -64,6 +95,8 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('mousemove', handleMouseMove)
+  window.removeEventListener('touchmove', handleTouchMove)
+  window.removeEventListener('deviceorientation', handleDeviceOrientation)
 })
 </script>
 
@@ -172,7 +205,7 @@ onUnmounted(() => {
 
       <!-- Right Content: Interactive 3D Parallax Graphic -->
       <div
-        class="hidden lg:flex justify-center items-center relative perspective-1000 w-full aspect-square max-w-[500px] ml-auto"
+        class="flex justify-center items-center relative perspective-1000 w-full aspect-square max-w-[320px] sm:max-w-[400px] lg:max-w-[500px] mx-auto lg:ml-auto mt-16 lg:mt-0"
       >
         <div
           class="relative w-full h-full transition-transform duration-300 ease-out preserve-3d"
