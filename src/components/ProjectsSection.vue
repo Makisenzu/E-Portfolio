@@ -208,7 +208,7 @@ function openGallery(item: (typeof projects)[0]) {
 
           <!-- Subtle gradient accent on hover -->
           <div
-            class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            class="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-border to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
           />
         </div>
       </div>
