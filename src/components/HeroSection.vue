@@ -60,7 +60,7 @@ const handleTouchMove = (e: TouchEvent) => {
     const touch = e.touches[0]
     const x = (touch.clientX / window.innerWidth) * 2 - 1
     const y = (touch.clientY / window.innerHeight) * 2 - 1
-    
+
     mouseX.value = x * 15
     mouseY.value = y * 15
   }
@@ -73,7 +73,7 @@ const handleDeviceOrientation = (e: DeviceOrientationEvent) => {
   // Constrain gamma (-45 to 45)
   if (gamma > 45) gamma = 45
   if (gamma < -45) gamma = -45
-  
+
   // Center beta around 45 degrees (typical viewing angle) and constrain
   let betaRelative = beta - 45
   if (betaRelative > 45) betaRelative = 45
@@ -92,13 +92,13 @@ const edges = ['top', 'bottom', 'left', 'right'] as const
 const handleBlobClick = () => {
   if (isBlobHiding.value) return
   isBlobHiding.value = true
-  
+
   setTimeout(() => {
     let newEdge
     do {
       newEdge = edges[Math.floor(Math.random() * edges.length)]
     } while (newEdge === blobPosition.value)
-    
+
     blobPosition.value = newEdge
     blobOffset.value = 20 + Math.random() * 60
     isBlobHiding.value = false
@@ -109,10 +109,10 @@ const getBlobStyle = () => {
   const style: Record<string, string> = {
     transition: 'transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
   }
-  
+
   let hideTranslate = ''
   let rotation = ''
-  
+
   if (blobPosition.value === 'bottom') {
     style.bottom = '0'
     style.left = `${blobOffset.value}%`
@@ -134,7 +134,7 @@ const getBlobStyle = () => {
     hideTranslate = isBlobHiding.value ? 'translate(100%, -50%)' : 'translate(30%, -50%)'
     rotation = 'rotate(-90deg)'
   }
-  
+
   style.transform = `${hideTranslate} ${rotation}`
   return style
 }
@@ -142,7 +142,7 @@ const getBlobStyle = () => {
 const eyeTransform = computed(() => {
   let x = mouseX.value
   let y = mouseY.value
-  
+
   if (blobPosition.value === 'top') {
     x = -mouseX.value
     y = -mouseY.value
@@ -153,7 +153,7 @@ const eyeTransform = computed(() => {
     x = -mouseY.value
     y = mouseX.value
   }
-  
+
   return `translate(${x}px, ${y}px)`
 })
 
@@ -218,7 +218,7 @@ onUnmounted(() => {
           class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-[1.1] flex flex-col gap-2"
         >
           <span
-            class="font-mono text-transparent bg-clip-text bg-gradient-to-r from-foreground to-foreground hover:from-primary hover:to-emerald-500 cursor-crosshair transition-all duration-300 inline-block whitespace-nowrap"
+            class="font-mono text-transparent bg-clip-text bg-linear-to-r from-foreground to-foreground hover:from-primary hover:to-emerald-500 cursor-crosshair transition-all duration-300 inline-block whitespace-nowrap"
             @mouseenter="handleInteraction"
             @touchstart="handleInteraction"
           >
@@ -276,7 +276,6 @@ onUnmounted(() => {
         </div>
       </div>
 
-
       <!-- Right Content: Interactive 3D Parallax Graphic (Desktop Only) -->
       <div
         class="hidden lg:flex justify-center items-center relative perspective-1000 w-full aspect-square max-w-[500px] ml-auto"
@@ -287,7 +286,7 @@ onUnmounted(() => {
         >
           <!-- Background glow/mesh -->
           <div
-            class="absolute inset-12 bg-gradient-to-tr from-primary/20 via-transparent to-emerald-500/20 rounded-full blur-2xl animate-pulse"
+            class="absolute inset-12 bg-linear-to-tr from-primary/20 via-transparent to-emerald-500/20 rounded-full blur-2xl animate-pulse"
             style="animation-duration: 4s"
           />
 
@@ -357,38 +356,49 @@ onUnmounted(() => {
     </div>
 
     <!-- Mobile Content: Peeping Blob -->
-    <div 
+    <div
       class="fixed lg:hidden z-50 cursor-pointer"
       :style="getBlobStyle()"
       @click="handleBlobClick"
     >
       <div class="animate-[bounce_3s_infinite]">
-        <div 
-          class="relative w-28 h-28 sm:w-32 sm:h-32 bg-gradient-to-br from-primary/30 to-emerald-500/30 shadow-lg backdrop-blur-md flex justify-center items-center transition-all duration-200"
-          :style="{ 
-            borderRadius: `${50 + mouseX}% ${50 - mouseX}% ${50 + Math.abs(mouseY)}% ${50 - Math.abs(mouseY)}%`
+        <div
+          class="relative w-28 h-28 sm:w-32 sm:h-32 bg-linear-to-br from-primary/30 to-emerald-500/30 shadow-lg backdrop-blur-md flex justify-center items-center transition-all duration-200"
+          :style="{
+            borderRadius: `${50 + mouseX}% ${50 - mouseX}% ${50 + Math.abs(mouseY)}% ${50 - Math.abs(mouseY)}%`,
           }"
         >
           <!-- Eyes Container (shifts with tilt) -->
-          <div class="relative flex gap-5 mb-2 transition-transform duration-75"
-               :style="{ transform: eyeTransform }">
-               
+          <div
+            class="relative flex gap-5 mb-2 transition-transform duration-75"
+            :style="{ transform: eyeTransform }"
+          >
             <!-- Left Eye -->
-            <div class="w-3.5 h-5 bg-foreground rounded-full flex justify-center items-center overflow-hidden">
+            <div
+              class="w-3.5 h-5 bg-foreground rounded-full flex justify-center items-center overflow-hidden"
+            >
               <div class="w-1.5 h-1.5 bg-background rounded-full mt-1"></div>
             </div>
-            
+
             <!-- Right Eye -->
-            <div class="w-3.5 h-5 bg-foreground rounded-full flex justify-center items-center overflow-hidden">
+            <div
+              class="w-3.5 h-5 bg-foreground rounded-full flex justify-center items-center overflow-hidden"
+            >
               <div class="w-1.5 h-1.5 bg-background rounded-full mt-1"></div>
             </div>
 
             <!-- Blush -->
-            <div class="absolute top-5 -left-3 w-3 h-1.5 bg-rose-400/60 rounded-full blur-[2px]"></div>
-            <div class="absolute top-5 -right-3 w-3 h-1.5 bg-rose-400/60 rounded-full blur-[2px]"></div>
+            <div
+              class="absolute top-5 -left-3 w-3 h-1.5 bg-rose-400/60 rounded-full blur-[2px]"
+            ></div>
+            <div
+              class="absolute top-5 -right-3 w-3 h-1.5 bg-rose-400/60 rounded-full blur-[2px]"
+            ></div>
 
             <!-- Smile -->
-            <div class="absolute top-4 left-1/2 -translate-x-1/2 w-3 h-3 border-b-2 border-foreground rounded-full"></div>
+            <div
+              class="absolute top-4 left-1/2 -translate-x-1/2 w-3 h-3 border-b-2 border-foreground rounded-full"
+            ></div>
           </div>
         </div>
       </div>
