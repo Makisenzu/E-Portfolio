@@ -157,7 +157,9 @@ const parallaxCoords = computed(() => {
   return { x, y }
 })
 
-const eyeTransform = computed(() => `translate(${parallaxCoords.value.x}px, ${parallaxCoords.value.y}px)`)
+const eyeTransform = computed(
+  () => `translate(${parallaxCoords.value.x}px, ${parallaxCoords.value.y}px)`,
+)
 
 onMounted(() => {
   window.addEventListener('mousemove', handleMouseMove)
@@ -369,15 +371,19 @@ onUnmounted(() => {
           class="relative w-28 h-28 sm:w-32 sm:h-32 bg-linear-to-br from-amber-400/80 to-orange-500/80 shadow-lg backdrop-blur-md flex justify-center items-center transition-all duration-200 rounded-[45%]"
         >
           <!-- Left Ear (parallax depth and rotation) -->
-          <div 
+          <div
             class="absolute -left-3 top-2 w-10 h-16 bg-amber-600/90 rounded-[40%_40%_50%_50%] origin-top -z-10 shadow-inner transition-transform duration-75"
-            :style="{ transform: `translate(${parallaxCoords.x * -0.2}px, ${parallaxCoords.y * -0.2}px) rotate(${-25 + parallaxCoords.x * 0.5}deg)` }"
+            :style="{
+              transform: `translate(${parallaxCoords.x * -0.2}px, ${parallaxCoords.y * -0.2}px) rotate(${-25 + parallaxCoords.x * 0.5}deg)`,
+            }"
           ></div>
-          
+
           <!-- Right Ear (parallax depth and rotation) -->
-          <div 
+          <div
             class="absolute -right-3 top-2 w-10 h-16 bg-amber-600/90 rounded-[40%_40%_50%_50%] origin-top -z-10 shadow-inner transition-transform duration-75"
-            :style="{ transform: `translate(${parallaxCoords.x * -0.2}px, ${parallaxCoords.y * -0.2}px) rotate(${25 + parallaxCoords.x * 0.5}deg)` }"
+            :style="{
+              transform: `translate(${parallaxCoords.x * -0.2}px, ${parallaxCoords.y * -0.2}px) rotate(${25 + parallaxCoords.x * 0.5}deg)`,
+            }"
           ></div>
 
           <!-- Face Container (shifts with tilt for 3D depth) -->
@@ -388,31 +394,47 @@ onUnmounted(() => {
             <!-- Eyes -->
             <div class="flex gap-6 mb-1 z-10">
               <!-- Left Eye -->
-              <div class="w-3 h-4 bg-foreground rounded-full flex justify-center items-start pt-0.5 overflow-hidden shadow-sm">
+              <div
+                class="w-3 h-4 bg-foreground rounded-full flex justify-center items-start pt-0.5 overflow-hidden shadow-sm"
+              >
                 <div class="w-1.5 h-1.5 bg-background rounded-full mt-0.5"></div>
               </div>
               <!-- Right Eye -->
-              <div class="w-3 h-4 bg-foreground rounded-full flex justify-center items-start pt-0.5 overflow-hidden shadow-sm">
+              <div
+                class="w-3 h-4 bg-foreground rounded-full flex justify-center items-start pt-0.5 overflow-hidden shadow-sm"
+              >
                 <div class="w-1.5 h-1.5 bg-background rounded-full mt-0.5"></div>
               </div>
             </div>
 
             <!-- Snout -->
-            <div class="relative w-14 h-9 bg-background/90 rounded-[45%] flex flex-col items-center pt-1.5 shadow-md z-10">
+            <div
+              class="relative w-14 h-9 bg-background/90 rounded-[45%] flex flex-col items-center pt-1.5 shadow-md z-10"
+            >
               <!-- Nose -->
               <div class="w-4 h-2.5 bg-foreground rounded-full mb-0.5"></div>
               <!-- Mouth (Dog W-shape) -->
               <div class="flex justify-center -space-x-0.5 mt-0.5">
-                <div class="w-3 h-3 border-b-[2px] border-r-[2px] border-foreground rounded-br-full transform rotate-12"></div>
-                <div class="w-3 h-3 border-b-[2px] border-l-[2px] border-foreground rounded-bl-full transform -rotate-12"></div>
+                <div
+                  class="w-3 h-3 border-b-2 border-r-2 border-foreground rounded-br-full transform rotate-12"
+                ></div>
+                <div
+                  class="w-3 h-3 border-b-2 border-l-2 border-foreground rounded-bl-full transform -rotate-12"
+                ></div>
               </div>
               <!-- Tongue -->
-              <div class="absolute -bottom-2 w-4 h-5 bg-rose-400 rounded-b-full shadow-sm z-[-1] animate-pulse"></div>
+              <div
+                class="absolute -bottom-2 w-4 h-5 bg-rose-400 rounded-b-full shadow-sm z-[-1] animate-pulse"
+              ></div>
             </div>
-            
+
             <!-- Blush -->
-            <div class="absolute top-1/2 -mt-4 left-[20%] w-3.5 h-1.5 bg-rose-400/80 rounded-full blur-[2px] z-10"></div>
-            <div class="absolute top-1/2 -mt-4 right-[20%] w-3.5 h-1.5 bg-rose-400/80 rounded-full blur-[2px] z-10"></div>
+            <div
+              class="absolute top-1/2 -mt-4 left-[20%] w-3.5 h-1.5 bg-rose-400/80 rounded-full blur-[2px] z-10"
+            ></div>
+            <div
+              class="absolute top-1/2 -mt-4 right-[20%] w-3.5 h-1.5 bg-rose-400/80 rounded-full blur-[2px] z-10"
+            ></div>
           </div>
         </div>
       </div>
