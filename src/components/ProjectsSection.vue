@@ -22,6 +22,28 @@ import dashboardImg from '@/assets/images/dashboard.png'
 import ecommerceImg from '@/assets/images/ecommerce.png'
 import kanbanImg from '@/assets/images/kanban.png'
 
+import grabcollectImg from '@/assets/images/gc_1.png'
+import grabcollectImg2 from '@/assets/images/gc_2.png'
+import grabcollectImg3 from '@/assets/images/gc_3.png'
+import grabcollectImg4 from '@/assets/images/gc_4.png'
+
+import sfxcwebsiteImg1 from '@/assets/images/web_1.png'
+import sfxcwebsiteImg2 from '@/assets/images/web_2.png'
+import sfxcwebsiteImg3 from '@/assets/images/web_3.png'
+import sfxcwebsiteImg4 from '@/assets/images/web_4.png'
+
+import tabulationImg1 from '@/assets/images/tab_1.png'
+// import tabulationImg2 from '@/assets/images/tab_2.png'
+// import tabulationImg3 from '@/assets/images/tab_3.png'
+// import tabulationImg4 from '@/assets/images/tab_4.png'
+
+import pixelatedImg1 from '@/assets/images/pix_1.png'
+import pixelatedImg2 from '@/assets/images/pix_2.png'
+import pixelatedImg3 from '@/assets/images/pix_3.png'
+import pixelatedImg4 from '@/assets/images/pix_4.png'
+import pixelatedImg5 from '@/assets/images/pix_5.png'
+import pixelatedImg6 from '@/assets/images/pix_6.png'
+
 const projects = [
   {
     title: 'GarbCollect',
@@ -31,7 +53,7 @@ const projects = [
     link: '#',
     github: '#',
     featured: true,
-    images: [kanbanImg, dashboardImg],
+    images: [grabcollectImg, grabcollectImg2, grabcollectImg3, grabcollectImg4],
   },
   {
     title: 'Events Tabulation',
@@ -41,7 +63,7 @@ const projects = [
     link: '#',
     github: '#',
     featured: true,
-    images: [ecommerceImg, dashboardImg],
+    images: [tabulationImg1, sfxcwebsiteImg2, sfxcwebsiteImg3, sfxcwebsiteImg4],
   },
   {
     title: 'Pixelated',
@@ -51,7 +73,14 @@ const projects = [
     link: '#',
     github: '#',
     featured: false,
-    images: [dashboardImg, kanbanImg],
+    images: [
+      pixelatedImg1,
+      pixelatedImg2,
+      pixelatedImg3,
+      pixelatedImg4,
+      pixelatedImg5,
+      pixelatedImg6,
+    ],
   },
   {
     title: 'SFXC Website',
@@ -61,7 +90,7 @@ const projects = [
     link: 'https://www.sfxc.edu.ph',
     github: '#',
     featured: true,
-    images: [kanbanImg, ecommerceImg],
+    images: [sfxcwebsiteImg1, sfxcwebsiteImg2, sfxcwebsiteImg3, sfxcwebsiteImg4],
   },
 ]
 

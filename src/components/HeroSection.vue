@@ -139,6 +139,24 @@ const getBlobStyle = () => {
   return style
 }
 
+const eyeTransform = computed(() => {
+  let x = mouseX.value
+  let y = mouseY.value
+  
+  if (blobPosition.value === 'top') {
+    x = -mouseX.value
+    y = -mouseY.value
+  } else if (blobPosition.value === 'left') {
+    x = mouseY.value
+    y = -mouseX.value
+  } else if (blobPosition.value === 'right') {
+    x = -mouseY.value
+    y = mouseX.value
+  }
+  
+  return `translate(${x}px, ${y}px)`
+})
+
 onMounted(() => {
   window.addEventListener('mousemove', handleMouseMove)
   window.addEventListener('touchmove', handleTouchMove, { passive: true })
@@ -352,8 +370,8 @@ onUnmounted(() => {
           }"
         >
           <!-- Eyes Container (shifts with tilt) -->
-          <div class="relative flex gap-5 mb-2 transition-transform duration-200"
-               :style="{ transform: `translate(${mouseX}px, ${mouseY}px)` }">
+          <div class="relative flex gap-5 mb-2 transition-transform duration-75"
+               :style="{ transform: eyeTransform }">
                
             <!-- Left Eye -->
             <div class="w-3.5 h-5 bg-foreground rounded-full flex justify-center items-center overflow-hidden">
