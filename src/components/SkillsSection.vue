@@ -11,12 +11,12 @@ const skillCategories = [
   {
     title: 'Backend',
     description: 'Designing scalable server-side systems',
-    skills: ['Node.js', 'Python', 'Express', 'REST APIs', 'PostgreSQL', 'MongoDB'],
+    skills: ['Python', 'REST APIs', 'MySQL', 'Laravel'],
   },
   {
     title: 'Tools & Workflow',
     description: 'Streamlining development processes',
-    skills: ['Git', 'Docker', 'VS Code', 'Figma', 'Linux', 'CI/CD'],
+    skills: ['Git', 'Antigravity', 'VS Code', 'Figma', 'Linux'],
   },
 ]
 </script>
@@ -26,7 +26,9 @@ const skillCategories = [
     <div class="max-w-6xl mx-auto px-6">
       <!-- Section header -->
       <div class="flex items-center gap-4 mb-16">
-        <h2 class="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground whitespace-nowrap">
+        <h2
+          class="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground whitespace-nowrap"
+        >
           Skills
         </h2>
         <Separator class="flex-1" />
@@ -39,11 +41,11 @@ const skillCategories = [
           class="group relative"
         >
           <!-- Category card -->
-          <div class="p-6 rounded-xl border border-border bg-card/50 backdrop-blur-sm hover:bg-card hover:border-border/80 transition-all duration-300 h-full">
+          <div
+            class="p-6 rounded-xl border border-border bg-card/50 backdrop-blur-sm hover:bg-card hover:border-border/80 transition-all duration-300 h-full"
+          >
             <!-- Index number -->
-            <div class="text-[11px] font-mono text-muted-foreground/40 mb-4">
-              0{{ index + 1 }}
-            </div>
+            <div class="text-[11px] font-mono text-muted-foreground/40 mb-4">0{{ index + 1 }}</div>
 
             <h3 class="text-lg font-semibold text-foreground mb-1.5">
               {{ category.title }}

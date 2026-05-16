@@ -44,7 +44,7 @@ onUnmounted(() => {
     :class="[
       isScrolled
         ? 'bg-background/80 backdrop-blur-xl border-b border-border shadow-sm'
-        : 'bg-transparent'
+        : 'bg-transparent',
     ]"
   >
     <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -54,7 +54,7 @@ onUnmounted(() => {
         class="text-lg font-semibold tracking-tight text-foreground hover:text-foreground/80 transition-colors"
         @click.prevent="scrollTo('#hero')"
       >
-        Denmark<span class="text-muted-foreground font-normal">.dev</span>
+        Personal<span class="text-muted-foreground font-normal"> Portfolio</span>
       </a>
 
       <!-- Desktop Nav -->
@@ -122,12 +122,7 @@ onUnmounted(() => {
 
       <!-- Mobile Menu Button -->
       <div class="flex items-center gap-2 md:hidden">
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          @click="toggleTheme"
-          aria-label="Toggle theme"
-        >
+        <Button variant="ghost" size="icon-sm" @click="toggleTheme" aria-label="Toggle theme">
           <svg
             v-if="isDark"
             xmlns="http://www.w3.org/2000/svg"
