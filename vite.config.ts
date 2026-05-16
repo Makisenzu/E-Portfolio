@@ -7,7 +7,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/',
+  base: '/E-Portfolio/',
   plugins: [vue(), tailwindcss(), vueDevTools()],
   resolve: {
     alias: {
