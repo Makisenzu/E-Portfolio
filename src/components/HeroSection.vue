@@ -56,8 +56,9 @@ const handleMouseMove = (e: MouseEvent) => {
 }
 
 const handleTouchMove = (e: TouchEvent) => {
-  if (e.touches.length > 0) {
+  if (e.touches && e.touches.length > 0) {
     const touch = e.touches[0]
+    if (!touch) return
     const x = (touch.clientX / window.innerWidth) * 2 - 1
     const y = (touch.clientY / window.innerHeight) * 2 - 1
 
@@ -94,9 +95,10 @@ const handleBlobClick = () => {
   isBlobHiding.value = true
 
   setTimeout(() => {
-    let newEdge
+    let newEdge: 'top' | 'bottom' | 'left' | 'right' = edges[0]
     do {
-      newEdge = edges[Math.floor(Math.random() * edges.length)]
+      const randomIndex = Math.floor(Math.random() * edges.length)
+      newEdge = edges[randomIndex] || edges[0]
     } while (newEdge === blobPosition.value)
 
     blobPosition.value = newEdge
