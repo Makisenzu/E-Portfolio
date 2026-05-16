@@ -262,7 +262,7 @@ function openGallery(item: (typeof experiences)[0]) {
     <!-- Full Screen Image Viewer -->
     <div
       v-if="fullScreenImage"
-      class="fixed inset-0 z-[100] flex items-center justify-center bg-background/95 backdrop-blur-xl p-2 sm:p-6 cursor-zoom-out"
+      class="fixed inset-0 z-100 flex items-center justify-center bg-background/95 backdrop-blur-xl p-2 sm:p-6 cursor-zoom-out"
       @click="fullScreenImage = null"
     >
       <img
