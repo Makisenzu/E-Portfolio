@@ -5,6 +5,36 @@ import { Sun, Moon } from 'lucide-vue-next'
 
 const isVisible = ref(false)
 
+// Greeting Animation
+const greetingText = ref('')
+const greetings = ['Hello! Mabuhay!', 'Kamusta!', 'Welcome!', 'Hi, I am']
+let currentGreetingIndex = 0
+let isDeleting = false
+let typingTimeout: ReturnType<typeof setTimeout> | null = null
+
+const typeGreeting = () => {
+  const currentPhrase = greetings[currentGreetingIndex] || ''
+  
+  if (isDeleting) {
+    greetingText.value = currentPhrase.substring(0, greetingText.value.length - 1)
+  } else {
+    greetingText.value = currentPhrase.substring(0, greetingText.value.length + 1)
+  }
+  
+  let typeSpeed = isDeleting ? 40 : 100
+  
+  if (!isDeleting && greetingText.value === currentPhrase) {
+    typeSpeed = 2500 // Pause before deleting
+    isDeleting = true
+  } else if (isDeleting && greetingText.value === '') {
+    isDeleting = false
+    currentGreetingIndex = (currentGreetingIndex + 1) % greetings.length
+    typeSpeed = 400 // Pause before typing next phrase
+  }
+  
+  typingTimeout = setTimeout(typeGreeting, typeSpeed)
+}
+
 // Day/Night feature
 const isDayTime = computed(() => {
   const hour = new Date().getHours()
@@ -169,6 +199,11 @@ onMounted(() => {
   window.addEventListener('deviceorientation', handleDeviceOrientation)
   setTimeout(() => {
     isVisible.value = true
+    
+    // Start typewriter animation slightly after component mounts
+    setTimeout(() => {
+      typeGreeting()
+    }, 600)
   }, 100)
 })
 
@@ -176,6 +211,7 @@ onUnmounted(() => {
   window.removeEventListener('mousemove', handleMouseMove)
   window.removeEventListener('touchmove', handleTouchMove)
   window.removeEventListener('deviceorientation', handleDeviceOrientation)
+  if (typingTimeout) clearTimeout(typingTimeout)
 })
 </script>
 
@@ -216,7 +252,10 @@ onUnmounted(() => {
         >
           <Sun v-if="isDayTime" class="w-4 h-4 text-amber-500 animate-[spin_10s_linear_infinite]" />
           <Moon v-else class="w-4 h-4 text-blue-400 animate-pulse" />
-          <span class="text-sm font-medium text-foreground tracking-wide">Hi I am</span>
+          <span class="text-sm font-medium text-foreground tracking-wide flex items-center min-h-[20px]">
+            {{ greetingText }}
+            <span class="w-1.5 h-3.5 bg-primary ml-1 rounded-full animate-[pulse_1s_infinite]"></span>
+          </span>
         </div>
 
         <!-- Main heading / Interactive Name -->
