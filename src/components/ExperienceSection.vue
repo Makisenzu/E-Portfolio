@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import {
   Dialog,

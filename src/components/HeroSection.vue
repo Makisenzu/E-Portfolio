@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, onUnmounted } from 'vue'
+import { ref, onMounted, computed, onUnmounted, watch } from 'vue'
 import { Button } from '@/components/ui/button'
 import { Sun, Moon } from 'lucide-vue-next'
+import { isAppLoading } from '@/store'
 
 const isVisible = ref(false)
 
@@ -47,9 +48,14 @@ const displayText = ref(originalName)
 const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 let interval: ReturnType<typeof setInterval> | null = null
 
-const handleInteraction = () => {
+const handleInteraction = (eOrDuration?: Event | number) => {
+  const durationMs = typeof eOrDuration === 'number' ? eOrDuration : 800
   let iteration = 0
   if (interval) clearInterval(interval)
+
+  const intervalMs = 30
+  const totalSteps = durationMs / intervalMs
+  const stepSize = originalName.length / totalSteps
 
   interval = setInterval(() => {
     displayText.value = originalName
@@ -65,10 +71,11 @@ const handleInteraction = () => {
 
     if (iteration >= originalName.length) {
       if (interval) clearInterval(interval)
+      displayText.value = originalName // Ensure it settles cleanly
     }
 
-    iteration += 1 / 3
-  }, 30)
+    iteration += stepSize
+  }, intervalMs)
 }
 
 // Interactive Parallax Animation
@@ -197,14 +204,31 @@ onMounted(() => {
   window.addEventListener('mousemove', handleMouseMove)
   window.addEventListener('touchmove', handleTouchMove, { passive: true })
   window.addEventListener('deviceorientation', handleDeviceOrientation)
-  setTimeout(() => {
-    isVisible.value = true
-    
-    // Start typewriter animation slightly after component mounts
+  
+  const startAnimations = () => {
     setTimeout(() => {
-      typeGreeting()
-    }, 600)
-  }, 100)
+      isVisible.value = true
+      
+      // Auto-trigger the name animation for 3 seconds
+      handleInteraction(3000)
+      
+      // Start typewriter animation slightly after component mounts
+      setTimeout(() => {
+        typeGreeting()
+      }, 600)
+    }, 500) // Wait for the preloader to mostly fade out before showing Hero content
+  }
+
+  if (!isAppLoading.value) {
+    startAnimations()
+  } else {
+    const unwatch = watch(isAppLoading, (newVal) => {
+      if (!newVal) {
+        startAnimations()
+        unwatch() // Stop watching once triggered
+      }
+    })
+  }
 })
 
 onUnmounted(() => {

@@ -2,8 +2,8 @@
 import { ref, onMounted } from 'vue'
 import { RouterView } from 'vue-router'
 import TheNavbar from './components/TheNavbar.vue'
+import { isAppLoading } from './store'
 
-const isLoading = ref(true)
 const phase = ref<'terminal' | 'welcome'>('terminal')
 const loadingLines = ref<string[]>([])
 const showCursor = ref(true)
@@ -27,7 +27,7 @@ onMounted(() => {
 
   // Fade out preloader entirely
   setTimeout(() => {
-    isLoading.value = false
+    isAppLoading.value = false
   }, 3500) // Give welcome text enough time to shine
 })
 </script>
@@ -35,7 +35,7 @@ onMounted(() => {
 <template>
   <Transition name="preloader">
     <div
-      v-if="isLoading"
+      v-if="isAppLoading"
       class="fixed inset-0 z-[100] flex flex-col justify-center items-center bg-zinc-950 font-mono p-6 overflow-hidden"
     >
       
