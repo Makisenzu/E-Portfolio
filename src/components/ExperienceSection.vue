@@ -196,10 +196,23 @@ function openGallery(item: (typeof experiences)[0]) {
       </div>
     </div>
 
+    <!-- Preload all gallery images -->
+    <div class="sr-only" aria-hidden="true">
+      <template v-for="(exp, i) in experiences" :key="`preload-${i}`">
+        <img
+          v-for="(img, j) in exp.images"
+          :key="`preload-img-${j}`"
+          :src="img"
+          decoding="sync"
+          fetchpriority="high"
+        />
+      </template>
+    </div>
+
     <!-- Gallery Dialog -->
     <Dialog v-model:open="isGalleryOpen">
       <DialogContent
-        class="w-[95vw] sm:max-w-[800px] max-h-[90vh] overflow-y-auto bg-background/95 backdrop-blur-xl border-border"
+        class="w-[95vw] sm:max-w-[800px] max-h-[90vh] overflow-y-auto bg-background/95 backdrop-blur-xl border-border duration-100!"
       >
         <DialogHeader>
           <DialogTitle class="text-xl font-semibold pr-6"
@@ -222,6 +235,8 @@ function openGallery(item: (typeof experiences)[0]) {
                     <img
                       :src="img"
                       alt="Gallery image"
+                      loading="eager"
+                      decoding="sync"
                       class="object-cover w-full h-full transition-transform duration-700 group-hover:scale-[1.02]"
                     />
                     <div
@@ -261,18 +276,30 @@ function openGallery(item: (typeof experiences)[0]) {
     </Dialog>
 
     <!-- Full Screen Image Viewer -->
-    <Dialog :open="!!fullScreenImage" @update:open="(val) => { if (!val) fullScreenImage = null }">
-      <DialogContent class="max-w-[100vw] max-h-[100vh] w-screen h-screen p-0 border-none bg-transparent shadow-none [&>button]:hidden">
+    <Dialog
+      :open="!!fullScreenImage"
+      @update:open="
+        (val) => {
+          if (!val) fullScreenImage = null
+        }
+      "
+    >
+      <DialogContent
+        class="max-w-[100vw] max-h-screen w-screen h-screen p-0 border-none bg-transparent shadow-none [&>button]:hidden duration-75! data-[state=open]:animate-none! data-[state=closed]:animate-none!"
+      >
         <DialogTitle class="sr-only">Full Screen Image</DialogTitle>
-        <DialogDescription class="sr-only">A full screen view of the selected gallery image.</DialogDescription>
+        <DialogDescription class="sr-only"
+          >A full screen view of the selected gallery image.</DialogDescription
+        >
         <div
           class="w-full h-full flex items-center justify-center bg-background/95 backdrop-blur-xl p-2 sm:p-6 cursor-zoom-out"
           @click="fullScreenImage = null"
         >
           <img
-            v-if="fullScreenImage"
-            :src="fullScreenImage"
+            :src="fullScreenImage || ''"
             alt="Full screen view"
+            loading="eager"
+            decoding="sync"
             class="max-w-full max-h-full object-contain rounded-md shadow-2xl"
           />
           <!-- Close button -->
