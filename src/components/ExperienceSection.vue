@@ -261,38 +261,44 @@ function openGallery(item: (typeof experiences)[0]) {
     </Dialog>
 
     <!-- Full Screen Image Viewer -->
-    <div
-      v-if="fullScreenImage"
-      class="fixed inset-0 z-100 flex items-center justify-center bg-background/95 backdrop-blur-xl p-2 sm:p-6 cursor-zoom-out"
-      @click="fullScreenImage = null"
-    >
-      <img
-        :src="fullScreenImage"
-        alt="Full screen view"
-        class="max-w-full max-h-full object-contain rounded-md shadow-2xl"
-      />
-      <!-- Close button -->
-      <Button
-        variant="ghost"
-        size="icon"
-        class="absolute top-4 right-4 sm:top-6 sm:right-6 bg-background/50 hover:bg-background"
-        @click.stop="fullScreenImage = null"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+    <Dialog :open="!!fullScreenImage" @update:open="(val) => { if (!val) fullScreenImage = null }">
+      <DialogContent class="max-w-[100vw] max-h-[100vh] w-screen h-screen p-0 border-none bg-transparent shadow-none [&>button]:hidden">
+        <DialogTitle class="sr-only">Full Screen Image</DialogTitle>
+        <DialogDescription class="sr-only">A full screen view of the selected gallery image.</DialogDescription>
+        <div
+          class="w-full h-full flex items-center justify-center bg-background/95 backdrop-blur-xl p-2 sm:p-6 cursor-zoom-out"
+          @click="fullScreenImage = null"
         >
-          <path d="M18 6 6 18" />
-          <path d="m6 6 12 12" />
-        </svg>
-      </Button>
-    </div>
+          <img
+            v-if="fullScreenImage"
+            :src="fullScreenImage"
+            alt="Full screen view"
+            class="max-w-full max-h-full object-contain rounded-md shadow-2xl"
+          />
+          <!-- Close button -->
+          <Button
+            variant="ghost"
+            size="icon"
+            class="absolute top-4 right-4 sm:top-6 sm:right-6 bg-background/50 hover:bg-background z-50"
+            @click.stop="fullScreenImage = null"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M18 6 6 18" />
+              <path d="m6 6 12 12" />
+            </svg>
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   </section>
 </template>

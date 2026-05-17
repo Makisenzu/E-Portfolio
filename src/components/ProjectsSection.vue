@@ -96,6 +96,7 @@ const projects = [
 
 const selectedItem = ref<(typeof projects)[0] | null>(null)
 const isGalleryOpen = ref(false)
+const fullScreenImage = ref<string | null>(null)
 
 function openGallery(item: (typeof projects)[0]) {
   selectedItem.value = item
@@ -347,7 +348,9 @@ function openGallery(item: (typeof projects)[0]) {
 
     <!-- Gallery Dialog -->
     <Dialog v-model:open="isGalleryOpen">
-      <DialogContent class="sm:max-w-[800px] bg-background/95 backdrop-blur-xl border-border">
+      <DialogContent 
+        class="w-[95vw] sm:max-w-[800px] max-h-[90vh] overflow-y-auto bg-background/95 backdrop-blur-xl border-border"
+      >
         <DialogHeader>
           <DialogTitle class="text-xl font-semibold">{{ selectedItem?.title }}</DialogTitle>
           <DialogDescription class="text-muted-foreground">{{
@@ -355,28 +358,91 @@ function openGallery(item: (typeof projects)[0]) {
           }}</DialogDescription>
         </DialogHeader>
 
-        <div class="mt-6 relative px-8 pb-4">
+        <div class="mt-6 relative px-4 sm:px-8 pb-4">
           <Carousel class="w-full">
             <CarouselContent>
               <CarouselItem v-for="(img, idx) in selectedItem?.images" :key="idx">
                 <div class="p-1">
                   <div
-                    class="overflow-hidden rounded-lg border border-border/50 bg-muted/50 flex items-center justify-center aspect-video relative group"
+                    class="overflow-hidden rounded-lg border border-border/50 bg-muted/50 flex items-center justify-center aspect-video relative group cursor-zoom-in"
+                    @click="fullScreenImage = img"
                   >
                     <img
                       :src="img"
                       alt="Gallery image"
                       class="object-cover w-full h-full transition-transform duration-700 group-hover:scale-[1.02]"
                     />
+                    <div
+                      class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="white"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="drop-shadow-lg"
+                      >
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                        <path d="M8 11h6" />
+                        <path d="M11 8v6" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
               </CarouselItem>
             </CarouselContent>
             <CarouselPrevious
-              class="absolute -left-4 bg-background hover:bg-accent border-border"
+              class="absolute left-0 sm:-left-4 bg-background/80 hover:bg-accent border-border"
             />
-            <CarouselNext class="absolute -right-4 bg-background hover:bg-accent border-border" />
+            <CarouselNext class="absolute right-0 sm:-right-4 bg-background/80 hover:bg-accent border-border" />
           </Carousel>
+        </div>
+      </DialogContent>
+    </Dialog>
+
+    <!-- Full Screen Image Viewer -->
+    <Dialog :open="!!fullScreenImage" @update:open="(val) => { if (!val) fullScreenImage = null }">
+      <DialogContent class="max-w-[100vw] max-h-[100vh] w-screen h-screen p-0 border-none bg-transparent shadow-none [&>button]:hidden">
+        <DialogTitle class="sr-only">Full Screen Image</DialogTitle>
+        <DialogDescription class="sr-only">A full screen view of the selected gallery image.</DialogDescription>
+        <div
+          class="w-full h-full flex items-center justify-center bg-background/95 backdrop-blur-xl p-2 sm:p-6 cursor-zoom-out"
+          @click="fullScreenImage = null"
+        >
+          <img
+            v-if="fullScreenImage"
+            :src="fullScreenImage"
+            alt="Full screen view"
+            class="max-w-full max-h-full object-contain rounded-md shadow-2xl"
+          />
+          <!-- Close button -->
+          <Button
+            variant="ghost"
+            size="icon"
+            class="absolute top-4 right-4 sm:top-6 sm:right-6 bg-background/50 hover:bg-background z-50"
+            @click.stop="fullScreenImage = null"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M18 6 6 18" />
+              <path d="m6 6 12 12" />
+            </svg>
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
