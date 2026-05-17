@@ -4,32 +4,31 @@ import { RouterView } from 'vue-router'
 import TheNavbar from './components/TheNavbar.vue'
 
 const isLoading = ref(true)
-const loadingLines = ref<{text: string, isWelcome?: boolean}[]>([])
+const phase = ref<'terminal' | 'welcome'>('terminal')
+const loadingLines = ref<string[]>([])
 const showCursor = ref(true)
 
 onMounted(() => {
   const sequence = [
     { text: 'Initializing', delay: 400 },
     { text: 'Loading', delay: 1200 },
-    { text: 'WELCOME', delay: 2000, isWelcome: true }
   ]
 
-  // Add each line to the screen based on its delay
   sequence.forEach((item) => {
     setTimeout(() => {
-      loadingLines.value.push(item)
+      loadingLines.value.push(item.text)
     }, item.delay)
   })
 
-  // Hide the terminal cursor right when WELCOME appears
+  // Transition to WELCOME phase
   setTimeout(() => {
-    showCursor.value = false
-  }, 2000)
+    phase.value = 'welcome'
+  }, 2200)
 
-  // Fade out the entire loading screen
+  // Fade out preloader entirely
   setTimeout(() => {
     isLoading.value = false
-  }, 3000)
+  }, 3500) // Give welcome text enough time to shine
 })
 </script>
 
@@ -37,51 +36,55 @@ onMounted(() => {
   <Transition name="preloader">
     <div
       v-if="isLoading"
-      class="fixed inset-0 z-[100] flex flex-col justify-center items-center bg-zinc-950 font-mono p-6"
+      class="fixed inset-0 z-[100] flex flex-col justify-center items-center bg-zinc-950 font-mono p-6 overflow-hidden"
     >
-      <!-- Premium loader animation -->
-      <div class="relative w-24 h-24 mb-8 flex items-center justify-center">
-        <!-- Outer glow -->
-        <div class="absolute inset-0 bg-emerald-500/20 rounded-full blur-xl animate-pulse"></div>
-        
-        <!-- Spinning rings -->
-        <div class="absolute inset-0 rounded-full border-[3px] border-emerald-500/10 border-t-emerald-500 animate-spin" style="animation-duration: 1.5s;"></div>
-        <div class="absolute inset-3 rounded-full border-[3px] border-primary/10 border-b-primary animate-[spin_2s_linear_infinite_reverse]"></div>
-        
-        <!-- Center element -->
-        <div class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.8)]"></div>
-      </div>
-
-      <div class="w-full max-w-lg flex flex-col items-start gap-3">
-        <!-- Render sequence lines -->
-        <template v-for="(line, index) in loadingLines" :key="index">
-          <div 
-            :class="[
-              'w-full text-left',
-              line.isWelcome 
-                ? 'text-5xl md:text-7xl text-emerald-500 font-bold mt-8 tracking-[0.2em] text-center animate-pulse drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]' 
-                : 'text-emerald-500 text-lg sm:text-xl tracking-wider'
-            ]"
-          >
-            <!-- Terminal Prefix for normal lines -->
-            <span v-if="!line.isWelcome" class="mr-3 opacity-60">root@portfolio:~#</span>
-            
-            {{ line.text }}
-            
-            <!-- Blinking cursor for the last active line -->
-            <span 
-              v-if="index === loadingLines.length - 1 && showCursor && !line.isWelcome" 
-              class="inline-block w-2.5 h-5 bg-emerald-500 align-middle ml-2 animate-[pulse_0.8s_infinite]"
-            ></span>
+      
+      <!-- Phase 1: Terminal & Spinner -->
+      <Transition name="terminal-phase">
+        <div v-if="phase === 'terminal'" class="absolute flex flex-col items-center w-full max-w-lg">
+          <!-- Premium loader animation -->
+          <div class="relative w-24 h-24 mb-12 flex items-center justify-center">
+            <!-- Outer glow -->
+            <div class="absolute inset-0 bg-emerald-500/20 rounded-full blur-xl animate-pulse"></div>
+            <!-- Spinning rings -->
+            <div class="absolute inset-0 rounded-full border-[3px] border-emerald-500/10 border-t-emerald-500 animate-spin" style="animation-duration: 1s;"></div>
+            <div class="absolute inset-3 rounded-full border-[3px] border-primary/10 border-b-primary animate-[spin_1.5s_linear_infinite_reverse]"></div>
+            <!-- Center element -->
+            <div class="w-3 h-3 bg-emerald-500 rounded-full animate-ping shadow-[0_0_10px_rgba(16,185,129,0.8)]"></div>
           </div>
-        </template>
-        
-        <!-- Initial Cursor before anything loads -->
-        <div v-if="loadingLines.length === 0" class="text-emerald-500 text-lg sm:text-xl tracking-wider">
-          <span class="mr-3 opacity-60">root@portfolio:~#</span>
-          <span class="inline-block w-2.5 h-5 bg-emerald-500 align-middle animate-[pulse_0.8s_infinite]"></span>
+
+          <div class="w-full flex flex-col items-start gap-3 px-4 sm:px-0">
+            <template v-for="(line, index) in loadingLines" :key="index">
+              <div class="w-full text-left text-emerald-500/90 text-lg sm:text-xl tracking-wider">
+                <span class="mr-3 opacity-60">root@portfolio:~#</span>
+                {{ line }}
+                <span 
+                  v-if="index === loadingLines.length - 1 && showCursor" 
+                  class="inline-block w-2.5 h-5 bg-emerald-500 align-middle ml-2 animate-[pulse_0.8s_infinite]"
+                ></span>
+              </div>
+            </template>
+            
+            <!-- Initial Cursor -->
+            <div v-if="loadingLines.length === 0" class="text-emerald-500/90 text-lg sm:text-xl tracking-wider">
+              <span class="mr-3 opacity-60">root@portfolio:~#</span>
+              <span class="inline-block w-2.5 h-5 bg-emerald-500 align-middle animate-[pulse_0.8s_infinite]"></span>
+            </div>
+          </div>
         </div>
-      </div>
+      </Transition>
+
+      <!-- Phase 2: WELCOME Burst -->
+      <Transition name="welcome-phase">
+        <div v-if="phase === 'welcome'" class="absolute flex flex-col items-center justify-center">
+          <div class="text-6xl md:text-8xl lg:text-9xl text-emerald-500 font-bold tracking-[0.2em] md:tracking-[0.3em] text-center drop-shadow-[0_0_20px_rgba(16,185,129,0.8)] pl-[0.2em] md:pl-[0.3em]">
+            WELCOME
+          </div>
+          <!-- Hacker-style expanding underscore -->
+          <div class="w-full h-1.5 md:h-2 bg-emerald-500 mt-6 md:mt-8 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.8)] animate-[expand-width_0.6s_ease-out_forwards]"></div>
+        </div>
+      </Transition>
+
     </div>
   </Transition>
 
@@ -90,17 +93,54 @@ onMounted(() => {
 </template>
 
 <style>
-/* Base global styles (can optionally stay here or in main.css) */
+/* Base global styles */
 html {
   scroll-behavior: smooth;
 }
 
 .preloader-leave-active {
-  transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+  transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1), transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
 }
 .preloader-leave-to {
   opacity: 0;
-  transform: scale(1.05); /* Slight scale up for a smooth dismount */
+  transform: scale(1.1); /* Deep zoom out for transition */
   pointer-events: none;
+}
+
+/* Phase Transitions */
+.terminal-phase-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.terminal-phase-leave-to {
+  opacity: 0;
+  transform: translateY(-20px) scale(0.95);
+  filter: blur(5px);
+}
+
+.welcome-phase-enter-active {
+  transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition-delay: 0.2s; /* Wait for terminal to fade out */
+}
+.welcome-phase-enter-from {
+  opacity: 0;
+  transform: scale(0.8) translateY(20px);
+  letter-spacing: 0.1em;
+  filter: blur(10px);
+}
+.welcome-phase-enter-to {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  filter: blur(0px);
+}
+
+@keyframes expand-width {
+  0% {
+    width: 0%;
+    opacity: 0;
+  }
+  100% {
+    width: 100%;
+    opacity: 1;
+  }
 }
 </style>
