@@ -4,7 +4,7 @@ import { Separator } from '@/components/ui/separator'
 const references = [
   {
     name: 'Irene May C. Escauso, Ph.D.',
-    title: 'Philippine Society of Information Technology Educators President 2024',
+    title: 'Philippine Society of Information Technology Educators, President 2024',
     organization: 'Caraga State University Cabadbaran Campus',
     relationship: 'Former Program Head',
     email: 'irenemayce03@gmail.com',
