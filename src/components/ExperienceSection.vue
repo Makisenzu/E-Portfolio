@@ -46,11 +46,26 @@ import psiteImg3 from '@/assets/images/psite_3.jpg'
 import ojtImg1 from '@/assets/images/intern_1.jpg'
 import ojtImg2 from '@/assets/images/intern_2.jpg'
 
+import palaroImg1 from '@/assets/images/palaro_1.jpg'
+import palaroImg2 from '@/assets/images/palaro_2.jpg'
+import palaroImg3 from '@/assets/images/palaro_3.jpg'
+import palaroImg4 from '@/assets/images/palaro_4.jpg'
+import palaroImg5 from '@/assets/images/palaro_5.jpg'
+
 const experiences = [
+  {
+    role: 'Palarong Pambansa 2026 Tech Support',
+    company: 'Provincial Government of Agusan del Sur',
+    period: '2026 - Present',
+    description:
+      'I assisted the government in producing all official Palarong Pambansa IDs for the athletes and officials. Additionally, I served as the Technical Assistant for the Dance Sports Livestreaming Team, where I was responsible for setting up and operating the livestreaming equipment.',
+    skills: ['Teamwork', 'Responsibility', 'Technical Support'],
+    images: [palaroImg1, palaroImg2, palaroImg3, palaroImg4, palaroImg5],
+  },
   {
     role: 'Web Developer Intern',
     company: 'St. Francis Xavier College',
-    period: '2026 - Present',
+    period: '2026',
     description:
       'Contributed to the development of the school official website (sfxc.edu.ph), focusing on improving front-end design and user experience. ',
     skills: ['Vue.js', 'Laravel', 'MySQL'],
