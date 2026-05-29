@@ -4,6 +4,7 @@ import AboutSection from '@/components/AboutSection.vue'
 import SkillsSection from '@/components/SkillsSection.vue'
 import ProjectsSection from '@/components/ProjectsSection.vue'
 import ExperienceSection from '@/components/ExperienceSection.vue'
+import ReferencesSection from '@/components/ReferencesSection.vue'
 import TheFooter from '@/components/TheFooter.vue'
 </script>
 
@@ -14,6 +15,7 @@ import TheFooter from '@/components/TheFooter.vue'
     <SkillsSection />
     <ProjectsSection />
     <ExperienceSection />
+    <ReferencesSection />
     <TheFooter />
   </main>
 </template>

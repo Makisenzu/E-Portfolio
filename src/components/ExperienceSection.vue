@@ -109,7 +109,7 @@ const experiences = [
   },
   {
     role: 'PSITE Programming Competition',
-    company: 'Philippine Society of Information Technology Students',
+    company: 'Philippine Society of Information Technology Educators',
     period: '2024',
     description:
       'Competed in the PSITE Programming Competition, securing 7th place in the regional level. Focused on programming challenges that tested participants’ ability to identify, analyze, and solve problems.',
