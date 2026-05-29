@@ -6,6 +6,11 @@ import { isAppLoading } from '@/store'
 
 const isVisible = ref(false)
 
+// Dog scroll behavior
+const isScrolledDown = ref(false)
+const showBubble = ref(true)
+const bubbleDismissed = ref(false)
+
 // Greeting Animation
 const greetingText = ref('')
 const greetings = ['Hello! Mabuhay!', 'Kamusta!', 'Welcome!', 'Hi, I am']
@@ -15,15 +20,15 @@ let typingTimeout: ReturnType<typeof setTimeout> | null = null
 
 const typeGreeting = () => {
   const currentPhrase = greetings[currentGreetingIndex] || ''
-  
+
   if (isDeleting) {
     greetingText.value = currentPhrase.substring(0, greetingText.value.length - 1)
   } else {
     greetingText.value = currentPhrase.substring(0, greetingText.value.length + 1)
   }
-  
+
   let typeSpeed = isDeleting ? 40 : 100
-  
+
   if (!isDeleting && greetingText.value === currentPhrase) {
     typeSpeed = 2500 // Pause before deleting
     isDeleting = true
@@ -32,7 +37,7 @@ const typeGreeting = () => {
     currentGreetingIndex = (currentGreetingIndex + 1) % greetings.length
     typeSpeed = 400 // Pause before typing next phrase
   }
-  
+
   typingTimeout = setTimeout(typeGreeting, typeSpeed)
 }
 
@@ -122,26 +127,76 @@ const handleDeviceOrientation = (e: DeviceOrientationEvent) => {
   mouseY.value = (betaRelative / 45) * 15
 }
 
-const blobPosition = ref<'top' | 'bottom' | 'left' | 'right'>('bottom')
-const blobOffset = ref(50)
+const heroPosition = ref<'top' | 'bottom' | 'left' | 'right'>('bottom')
+const heroOffset = ref(50)
+const scrolledPosition = ref<'top' | 'bottom' | 'left' | 'right'>('top')
+const scrolledOffset = ref(85) // default top-right peeping upside down
+const isRepositionedWhileScrolled = ref(false)
+const scrolledRepositionedPosition = ref<'top' | 'bottom' | 'left' | 'right'>('top')
+const scrolledRepositionedOffset = ref(85)
 const isBlobHiding = ref(false)
 const edges = ['top', 'bottom', 'left', 'right'] as const
 
 const handleBlobClick = () => {
+  // Dismiss speech bubble on first click
+  if (!bubbleDismissed.value) {
+    bubbleDismissed.value = true
+    showBubble.value = false
+  }
+
   if (isBlobHiding.value) return
   isBlobHiding.value = true
 
   setTimeout(() => {
     let newEdge: 'top' | 'bottom' | 'left' | 'right' = edges[0]
+    const currentEdge = isScrolledDown.value
+      ? (isRepositionedWhileScrolled.value ? scrolledRepositionedPosition.value : scrolledPosition.value)
+      : heroPosition.value
+
     do {
       const randomIndex = Math.floor(Math.random() * edges.length)
       newEdge = edges[randomIndex] || edges[0]
-    } while (newEdge === blobPosition.value)
+    } while (newEdge === currentEdge)
 
-    blobPosition.value = newEdge
-    blobOffset.value = 20 + Math.random() * 60
+    const newOffset = 20 + Math.random() * 60
+
+    if (isScrolledDown.value) {
+      scrolledRepositionedPosition.value = newEdge
+      scrolledRepositionedOffset.value = newOffset
+      isRepositionedWhileScrolled.value = true
+    } else {
+      heroPosition.value = newEdge
+      heroOffset.value = newOffset
+    }
+
     isBlobHiding.value = false
   }, 400)
+}
+
+let lastScrollTop = 0
+
+// Handle scroll: dock dog to top-right/left peeping upside down or reset if repositioned
+const handleDogScroll = () => {
+  const heroEl = document.getElementById('hero')
+  if (!heroEl) return
+  const heroBottom = heroEl.getBoundingClientRect().bottom
+  
+  const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop
+  const isScrollMovement = Math.abs(currentScrollTop - lastScrollTop) > 2
+  lastScrollTop = currentScrollTop
+
+  isScrolledDown.value = heroBottom < window.innerHeight * 0.5
+
+  // If scrolled down and manually repositioned, scrolling again resets the dog back to default top-right peeping position
+  if (isScrolledDown.value && isRepositionedWhileScrolled.value && isScrollMovement) {
+    isRepositionedWhileScrolled.value = false
+  }
+
+  // Dismiss bubble on scroll
+  if (isScrolledDown.value && !bubbleDismissed.value) {
+    bubbleDismissed.value = true
+    showBubble.value = false
+  }
 }
 
 const getBlobStyle = () => {
@@ -152,24 +207,32 @@ const getBlobStyle = () => {
   let hideTranslate = ''
   let rotation = ''
 
-  if (blobPosition.value === 'bottom') {
+  const activePosition = isScrolledDown.value
+    ? (isRepositionedWhileScrolled.value ? scrolledRepositionedPosition.value : scrolledPosition.value)
+    : heroPosition.value
+
+  const activeOffset = isScrolledDown.value
+    ? (isRepositionedWhileScrolled.value ? scrolledRepositionedOffset.value : scrolledOffset.value)
+    : heroOffset.value
+
+  if (activePosition === 'bottom') {
     style.bottom = '0'
-    style.left = `${blobOffset.value}%`
+    style.left = `${activeOffset}%`
     hideTranslate = isBlobHiding.value ? 'translate(-50%, 100%)' : 'translate(-50%, 30%)'
     rotation = 'rotate(0deg)'
-  } else if (blobPosition.value === 'top') {
+  } else if (activePosition === 'top') {
     style.top = '0'
-    style.left = `${blobOffset.value}%`
+    style.left = `${activeOffset}%`
     hideTranslate = isBlobHiding.value ? 'translate(-50%, -100%)' : 'translate(-50%, -30%)'
     rotation = 'rotate(180deg)'
-  } else if (blobPosition.value === 'left') {
+  } else if (activePosition === 'left') {
     style.left = '0'
-    style.top = `${blobOffset.value}%`
+    style.top = `${activeOffset}%`
     hideTranslate = isBlobHiding.value ? 'translate(-100%, -50%)' : 'translate(-30%, -50%)'
     rotation = 'rotate(90deg)'
-  } else if (blobPosition.value === 'right') {
+  } else if (activePosition === 'right') {
     style.right = '0'
-    style.top = `${blobOffset.value}%`
+    style.top = `${activeOffset}%`
     hideTranslate = isBlobHiding.value ? 'translate(100%, -50%)' : 'translate(30%, -50%)'
     rotation = 'rotate(-90deg)'
   }
@@ -182,13 +245,17 @@ const parallaxCoords = computed(() => {
   let x = mouseX.value
   let y = mouseY.value
 
-  if (blobPosition.value === 'top') {
+  const activePosition = isScrolledDown.value
+    ? (isRepositionedWhileScrolled.value ? scrolledRepositionedPosition.value : scrolledPosition.value)
+    : heroPosition.value
+
+  if (activePosition === 'top') {
     x = -mouseX.value
     y = -mouseY.value
-  } else if (blobPosition.value === 'left') {
+  } else if (activePosition === 'left') {
     x = mouseY.value
     y = -mouseX.value
-  } else if (blobPosition.value === 'right') {
+  } else if (activePosition === 'right') {
     x = -mouseY.value
     y = mouseX.value
   }
@@ -204,14 +271,15 @@ onMounted(() => {
   window.addEventListener('mousemove', handleMouseMove)
   window.addEventListener('touchmove', handleTouchMove, { passive: true })
   window.addEventListener('deviceorientation', handleDeviceOrientation)
-  
+  window.addEventListener('scroll', handleDogScroll, { passive: true })
+
   const startAnimations = () => {
     setTimeout(() => {
       isVisible.value = true
-      
+
       // Auto-trigger the name animation for 3 seconds
       handleInteraction(3000)
-      
+
       // Start typewriter animation slightly after component mounts
       setTimeout(() => {
         typeGreeting()
@@ -235,6 +303,7 @@ onUnmounted(() => {
   window.removeEventListener('mousemove', handleMouseMove)
   window.removeEventListener('touchmove', handleTouchMove)
   window.removeEventListener('deviceorientation', handleDeviceOrientation)
+  window.removeEventListener('scroll', handleDogScroll)
   if (typingTimeout) clearTimeout(typingTimeout)
 })
 </script>
@@ -276,9 +345,13 @@ onUnmounted(() => {
         >
           <Sun v-if="isDayTime" class="w-4 h-4 text-amber-500 animate-[spin_10s_linear_infinite]" />
           <Moon v-else class="w-4 h-4 text-blue-400 animate-pulse" />
-          <span class="text-sm font-medium text-foreground tracking-wide flex items-center min-h-[20px]">
+          <span
+            class="text-sm font-medium text-foreground tracking-wide flex items-center min-h-[20px]"
+          >
             {{ greetingText }}
-            <span class="w-1.5 h-3.5 bg-primary ml-1 rounded-full animate-[pulse_1s_infinite]"></span>
+            <span
+              class="w-1.5 h-3.5 bg-primary ml-1 rounded-full animate-[pulse_1s_infinite]"
+            ></span>
           </span>
         </div>
 
@@ -424,20 +497,47 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <!-- Mobile Content: Peeping Dog -->
+    <!-- Interactive Peeping Dog -->
     <div
-      class="fixed lg:hidden z-50 cursor-pointer"
+      class="fixed z-50 cursor-pointer"
       :style="getBlobStyle()"
       @click="handleBlobClick"
     >
-      <div class="animate-[bounce_3s_infinite]">
+      <!-- Speech Bubble -->
+      <Transition
+        enter-active-class="transition-all duration-400 ease-out"
+        enter-from-class="opacity-0 scale-75 translate-y-2"
+        enter-to-class="opacity-100 scale-100 translate-y-0"
+        leave-active-class="transition-all duration-300 ease-in"
+        leave-from-class="opacity-100 scale-100"
+        leave-to-class="opacity-0 scale-90 -translate-y-1"
+      >
+        <div
+          v-if="showBubble && !isScrolledDown"
+          class="absolute -top-14 left-1/2 -translate-x-1/2 z-50 pointer-events-none"
+        >
+          <div
+            class="relative bg-foreground text-background text-xs font-bold px-3 py-1.5 rounded-full shadow-lg whitespace-nowrap animate-[bubble-float_2s_ease-in-out_infinite]"
+          >
+            Click Me!
+            <!-- Tail/arrow -->
+            <div
+              class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-foreground rotate-45 rounded-sm"
+            ></div>
+          </div>
+        </div>
+      </Transition>
+
+      <div :class="isScrolledDown ? '' : 'animate-[bounce_3s_infinite]'">
         <!-- The Dog Head -->
         <div
-          class="relative w-28 h-28 sm:w-32 sm:h-32 bg-linear-to-br from-amber-400/80 to-orange-500/80 shadow-lg backdrop-blur-md flex justify-center items-center transition-all duration-200 rounded-[45%]"
+          class="relative bg-linear-to-br from-amber-400/80 to-orange-500/80 shadow-lg backdrop-blur-md flex justify-center items-center rounded-[45%] transition-all duration-500"
+          :class="isScrolledDown ? 'w-16 h-16' : 'w-28 h-28 sm:w-32 sm:h-32'"
         >
           <!-- Left Ear (parallax depth and rotation) -->
           <div
-            class="absolute -left-3 top-2 w-10 h-16 bg-amber-600/90 rounded-[40%_40%_50%_50%] origin-top -z-10 shadow-inner transition-transform duration-75"
+            class="absolute -left-2 top-1 bg-amber-600/90 rounded-[40%_40%_50%_50%] origin-top -z-10 shadow-inner transition-all duration-500"
+            :class="isScrolledDown ? 'w-6 h-9' : 'w-10 h-16 -left-3 top-2'"
             :style="{
               transform: `translate(${parallaxCoords.x * -0.2}px, ${parallaxCoords.y * -0.2}px) rotate(${-25 + parallaxCoords.x * 0.5}deg)`,
             }"
@@ -445,7 +545,8 @@ onUnmounted(() => {
 
           <!-- Right Ear (parallax depth and rotation) -->
           <div
-            class="absolute -right-3 top-2 w-10 h-16 bg-amber-600/90 rounded-[40%_40%_50%_50%] origin-top -z-10 shadow-inner transition-transform duration-75"
+            class="absolute -right-2 top-1 bg-amber-600/90 rounded-[40%_40%_50%_50%] origin-top -z-10 shadow-inner transition-all duration-500"
+            :class="isScrolledDown ? 'w-6 h-9' : 'w-10 h-16 -right-3 top-2'"
             :style="{
               transform: `translate(${parallaxCoords.x * -0.2}px, ${parallaxCoords.y * -0.2}px) rotate(${25 + parallaxCoords.x * 0.5}deg)`,
             }"
@@ -457,29 +558,44 @@ onUnmounted(() => {
             :style="{ transform: eyeTransform }"
           >
             <!-- Eyes -->
-            <div class="flex gap-6 mb-1 z-10">
+            <div class="flex mb-1 z-10" :class="isScrolledDown ? 'gap-3' : 'gap-6'">
               <!-- Left Eye -->
               <div
-                class="w-3 h-4 bg-foreground rounded-full flex justify-center items-start pt-0.5 overflow-hidden shadow-sm"
+                class="bg-foreground rounded-full flex justify-center items-start pt-0.5 overflow-hidden shadow-sm transition-all duration-500"
+                :class="isScrolledDown ? 'w-2 h-2.5' : 'w-3 h-4'"
               >
-                <div class="w-1.5 h-1.5 bg-background rounded-full mt-0.5"></div>
+                <div
+                  class="bg-background rounded-full mt-0.5"
+                  :class="isScrolledDown ? 'w-1 h-1' : 'w-1.5 h-1.5'"
+                ></div>
               </div>
               <!-- Right Eye -->
               <div
-                class="w-3 h-4 bg-foreground rounded-full flex justify-center items-start pt-0.5 overflow-hidden shadow-sm"
+                class="bg-foreground rounded-full flex justify-center items-start pt-0.5 overflow-hidden shadow-sm transition-all duration-500"
+                :class="isScrolledDown ? 'w-2 h-2.5' : 'w-3 h-4'"
               >
-                <div class="w-1.5 h-1.5 bg-background rounded-full mt-0.5"></div>
+                <div
+                  class="bg-background rounded-full mt-0.5"
+                  :class="isScrolledDown ? 'w-1 h-1' : 'w-1.5 h-1.5'"
+                ></div>
               </div>
             </div>
 
             <!-- Snout -->
             <div
-              class="relative w-14 h-9 bg-background/90 rounded-[45%] flex flex-col items-center pt-1.5 shadow-md z-10"
+              class="relative bg-background/90 rounded-[45%] flex flex-col items-center pt-1 shadow-md z-10 transition-all duration-500"
+              :class="isScrolledDown ? 'w-8 h-5' : 'w-14 h-9 pt-1.5'"
             >
               <!-- Nose -->
-              <div class="w-4 h-2.5 bg-foreground rounded-full mb-0.5"></div>
+              <div
+                class="bg-foreground rounded-full mb-0.5 transition-all duration-500"
+                :class="isScrolledDown ? 'w-2.5 h-1.5' : 'w-4 h-2.5'"
+              ></div>
               <!-- Mouth (Dog W-shape) -->
-              <div class="flex justify-center -space-x-0.5 mt-0.5">
+              <div
+                class="flex justify-center -space-x-0.5 mt-0.5"
+                :class="{ 'scale-75': isScrolledDown }"
+              >
                 <div
                   class="w-3 h-3 border-b-2 border-r-2 border-foreground rounded-br-full transform rotate-12"
                 ></div>
@@ -490,15 +606,18 @@ onUnmounted(() => {
               <!-- Tongue -->
               <div
                 class="absolute -bottom-2 w-4 h-5 bg-rose-400 rounded-b-full shadow-sm z-[-1] animate-pulse"
+                :class="{ 'w-2.5 h-3 -bottom-1': isScrolledDown }"
               ></div>
             </div>
 
             <!-- Blush -->
             <div
-              class="absolute top-1/2 -mt-4 left-[20%] w-3.5 h-1.5 bg-rose-400/80 rounded-full blur-[2px] z-10"
+              class="absolute top-1/2 -mt-4 left-[20%] bg-rose-400/80 rounded-full blur-[2px] z-10 transition-all duration-500"
+              :class="isScrolledDown ? 'w-2 h-1' : 'w-3.5 h-1.5'"
             ></div>
             <div
-              class="absolute top-1/2 -mt-4 right-[20%] w-3.5 h-1.5 bg-rose-400/80 rounded-full blur-[2px] z-10"
+              class="absolute top-1/2 -mt-4 right-[20%] bg-rose-400/80 rounded-full blur-[2px] z-10 transition-all duration-500"
+              :class="isScrolledDown ? 'w-2 h-1' : 'w-3.5 h-1.5'"
             ></div>
           </div>
         </div>
@@ -538,5 +657,18 @@ onUnmounted(() => {
 }
 .preserve-3d {
   transform-style: preserve-3d;
+}
+
+/* Custom dog styling and animations */
+
+/* Speech bubble floating animation */
+@keyframes bubble-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
 }
 </style>
