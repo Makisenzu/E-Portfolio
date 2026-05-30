@@ -150,7 +150,9 @@ const handleBlobClick = () => {
   setTimeout(() => {
     let newEdge: 'top' | 'bottom' | 'left' | 'right' = edges[0]
     const currentEdge = isScrolledDown.value
-      ? (isRepositionedWhileScrolled.value ? scrolledRepositionedPosition.value : scrolledPosition.value)
+      ? isRepositionedWhileScrolled.value
+        ? scrolledRepositionedPosition.value
+        : scrolledPosition.value
       : heroPosition.value
 
     do {
@@ -180,7 +182,7 @@ const handleDogScroll = () => {
   const heroEl = document.getElementById('hero')
   if (!heroEl) return
   const heroBottom = heroEl.getBoundingClientRect().bottom
-  
+
   const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop
   const isScrollMovement = Math.abs(currentScrollTop - lastScrollTop) > 2
   lastScrollTop = currentScrollTop
@@ -208,11 +210,15 @@ const getBlobStyle = () => {
   let rotation = ''
 
   const activePosition = isScrolledDown.value
-    ? (isRepositionedWhileScrolled.value ? scrolledRepositionedPosition.value : scrolledPosition.value)
+    ? isRepositionedWhileScrolled.value
+      ? scrolledRepositionedPosition.value
+      : scrolledPosition.value
     : heroPosition.value
 
   const activeOffset = isScrolledDown.value
-    ? (isRepositionedWhileScrolled.value ? scrolledRepositionedOffset.value : scrolledOffset.value)
+    ? isRepositionedWhileScrolled.value
+      ? scrolledRepositionedOffset.value
+      : scrolledOffset.value
     : heroOffset.value
 
   if (activePosition === 'bottom') {
@@ -246,7 +252,9 @@ const parallaxCoords = computed(() => {
   let y = mouseY.value
 
   const activePosition = isScrolledDown.value
-    ? (isRepositionedWhileScrolled.value ? scrolledRepositionedPosition.value : scrolledPosition.value)
+    ? isRepositionedWhileScrolled.value
+      ? scrolledRepositionedPosition.value
+      : scrolledPosition.value
     : heroPosition.value
 
   if (activePosition === 'top') {
@@ -448,7 +456,7 @@ onUnmounted(() => {
 
             <div class="font-mono text-sm leading-relaxed space-y-2 text-muted-foreground">
               <p>
-                <span class="text-primary font-semibold">const</span>
+                <span class="text-primary font-semibold">const </span>
                 <span class="text-foreground">developer</span> = {
               </p>
               <p class="pl-6">name: <span class="text-emerald-500">"Denmark Rivera"</span>,</p>
@@ -498,11 +506,7 @@ onUnmounted(() => {
     </div>
 
     <!-- Interactive Peeping Dog -->
-    <div
-      class="fixed z-50 cursor-pointer"
-      :style="getBlobStyle()"
-      @click="handleBlobClick"
-    >
+    <div class="fixed z-50 cursor-pointer" :style="getBlobStyle()" @click="handleBlobClick">
       <!-- Speech Bubble -->
       <Transition
         enter-active-class="transition-all duration-400 ease-out"
