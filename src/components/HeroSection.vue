@@ -318,7 +318,6 @@ onUnmounted(() => {
 
 <template>
   <div class="absolute inset-0 z-0 w-full h-full min-h-[90vh] overflow-hidden pointer-events-none">
-    <SplashCursor />
     <div
       class="w-full h-full min-h-[90vh] transition-transform duration-75 ease-out"
       :style="{ transform: eyeTransform }"
@@ -329,7 +328,7 @@ onUnmounted(() => {
         :pupil-size="2"
         :iris-width="0.25"
         :glow-intensity="0.35"
-        :scale="0.4"
+        :scale="0.6"
         :noise-scale="1.0"
         :pupil-follow="1.3"
         :flame-speed="0.9"
@@ -361,13 +360,11 @@ onUnmounted(() => {
       style="animation-duration: 12s"
     />
 
-    <div
+    <!-- <div
       class="relative z-10 w-full max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center transition-all duration-1000 ease-out"
       :class="isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'"
-    >
-      <!-- Left Content: Repositioned Text -->
-      <div class="flex flex-col items-center lg:items-start text-center lg:text-left mt-16 lg:mt-0">
-        <!-- Day/Night Pill -->
+    > -->
+    <!-- <div class="flex flex-col items-center lg:items-start text-center lg:text-left mt-16 lg:mt-0">
         <div
           class="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-card/50 border border-border/50 backdrop-blur-md mb-8 shadow-sm"
         >
@@ -383,7 +380,6 @@ onUnmounted(() => {
           </span>
         </div>
 
-        <!-- Main heading / Interactive Name -->
         <h1
           class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-[1.1] flex flex-col gap-2"
         >
@@ -394,12 +390,8 @@ onUnmounted(() => {
           >
             {{ displayText }}
           </span>
-          <!-- <span class="text-muted-foreground/80 text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
-            >Software Engineer.</span
-          > -->
         </h1>
 
-        <!-- CTA buttons -->
         <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
           <Button
             id="hero-cta-projects"
@@ -444,30 +436,27 @@ onUnmounted(() => {
             Experience
           </Button>
         </div>
-      </div>
+      </div> -->
 
-      <!-- Right Content: Interactive 3D Parallax Graphic (Desktop Only) -->
-      <div
+    <!-- Right Content: Interactive 3D Parallax Graphic (Desktop Only) -->
+    <!-- <div
         class="hidden lg:flex justify-center items-center relative perspective-1000 w-full aspect-square max-w-[500px] ml-auto"
       >
         <div
           class="relative w-full h-full transition-transform duration-300 ease-out preserve-3d"
           :style="{ transform: `rotateY(${mouseX}deg) rotateX(${-mouseY}deg)` }"
         >
-          <!-- Background glow/mesh -->
           <div
             class="absolute inset-12 bg-linear-to-tr from-primary/20 via-transparent to-emerald-500/20 rounded-full blur-2xl animate-pulse"
             style="animation-duration: 4s"
           />
 
-          <!-- Code snippet card (Front) -->
           <div
             class="absolute top-1/2 left-1/2 w-[85%] bg-card/80 border border-border/60 p-6 rounded-2xl shadow-2xl backdrop-blur-xl transition-transform duration-300"
             :style="{
               transform: `translate(-50%, -50%) translateZ(60px) translateX(${mouseX * -1.5}px) translateY(${mouseY * -1.5}px)`,
             }"
           >
-            <!-- Mac style window dots -->
             <div class="flex gap-2 mb-6">
               <div class="w-3 h-3 rounded-full bg-destructive/80"></div>
               <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
@@ -491,7 +480,6 @@ onUnmounted(() => {
             </div>
           </div>
 
-          <!-- Floating Badges -->
           <div
             class="absolute top-[20%] -left-4 bg-background/90 border border-primary/20 px-4 py-2 rounded-xl shadow-lg backdrop-blur-md transition-transform duration-300 flex items-center gap-2"
             :style="{
@@ -523,9 +511,8 @@ onUnmounted(() => {
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <!-- Interactive Peeping Dog -->
     <div class="fixed z-50 cursor-pointer" :style="getBlobStyle()" @click="handleBlobClick">
       <!-- Speech Bubble -->
       <Transition
