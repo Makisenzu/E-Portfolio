@@ -5,6 +5,8 @@ import { Sun, Moon } from 'lucide-vue-next'
 import { isAppLoading } from '@/store'
 import EvilEye from './EvilEye.vue'
 const isVisible = ref(false)
+import SplashCursor from './SplashCursor.vue'
+import LightPillar from './LightPillar.vue'
 
 // Dog scroll behavior
 const isScrolledDown = ref(false)
@@ -318,20 +320,21 @@ onUnmounted(() => {
 
 <template>
   <div class="absolute inset-0 z-0 w-full h-full min-h-[90vh] overflow-hidden pointer-events-none">
+    <SplashCursor />
     <div
       class="w-full h-full min-h-[90vh] transition-transform duration-75 ease-out"
       :style="{ transform: eyeTransform }"
     >
       <EvilEye
-        eye-color="#FF6F37"
+        eye-color="#029f08"
         :intensity="1.5"
-        :pupil-size="0.6"
+        :pupil-size="2"
         :iris-width="0.25"
         :glow-intensity="0.35"
-        :scale="0.8"
+        :scale="0.4"
         :noise-scale="1.0"
-        :pupil-follow="1.0"
-        :flame-speed="1.0"
+        :pupil-follow="1.3"
+        :flame-speed="0.9"
         background-color="#000000"
       />
     </div>
