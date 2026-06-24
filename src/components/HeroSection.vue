@@ -5,8 +5,6 @@ import { Sun, Moon } from 'lucide-vue-next'
 import { isAppLoading } from '@/store'
 import EvilEye from './EvilEye.vue'
 const isVisible = ref(false)
-import SplashCursor from './SplashCursor.vue'
-import LightPillar from './LightPillar.vue'
 
 // Dog scroll behavior
 const isScrolledDown = ref(false)
