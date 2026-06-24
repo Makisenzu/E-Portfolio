@@ -3,7 +3,7 @@ import { ref, onMounted, computed, onUnmounted, watch } from 'vue'
 import { Button } from '@/components/ui/button'
 import { Sun, Moon } from 'lucide-vue-next'
 import { isAppLoading } from '@/store'
-
+import EvilEye from './EvilEye.vue'
 const isVisible = ref(false)
 
 // Dog scroll behavior
@@ -317,6 +317,25 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <div class="absolute inset-0 z-0 w-full h-full min-h-[90vh] overflow-hidden pointer-events-none">
+    <div
+      class="w-full h-full min-h-[90vh] transition-transform duration-75 ease-out"
+      :style="{ transform: eyeTransform }"
+    >
+      <EvilEye
+        eye-color="#FF6F37"
+        :intensity="1.5"
+        :pupil-size="0.6"
+        :iris-width="0.25"
+        :glow-intensity="0.35"
+        :scale="0.8"
+        :noise-scale="1.0"
+        :pupil-follow="1.0"
+        :flame-speed="1.0"
+        background-color="#000000"
+      />
+    </div>
+  </div>
   <section id="hero" class="relative min-h-[90vh] flex items-center overflow-hidden">
     <!-- Subtle grid background pattern -->
     <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]">
